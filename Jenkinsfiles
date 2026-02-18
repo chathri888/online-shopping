@@ -5,7 +5,7 @@ pipeline {
 
         stage('Clone Repo') {
             steps {
-                git 'https://github.com/yourusername/online-shopping-app.git'
+                git 'https://github.com/chathri888/online-shopping.git'
             }
         }
 
