@@ -45,7 +45,7 @@ services:
 
 # Named Volume (Persistent Storage)
 volumes:
-  mysql-data:
+  db-data:
 
 # Custom Network
 networks:
