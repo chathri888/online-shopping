@@ -3,23 +3,22 @@ pipeline {
 
     stages {
 
-        stage('Clone Repo') {
+        stage('Deploy Application') {
             steps {
-                git 'https://github.com/chathri888/online-shopping.git'
-            }
-        }
+                sh '''
+                echo "Stopping old containers..."
+                docker-compose down || true
 
-        stage('Stop Old Containers') {
-            steps {
-                sh 'docker-compose down || true'
-            }
-        }
+                echo "Building new images..."
+                docker-compose build --no-cache
 
-        stage('Build & Deploy New Containers') {
-            steps {
-                sh 'docker-compose up -d --build'
+                echo "Starting new containers..."
+                docker-compose up -d
+
+                echo "Cleaning unused images..."
+                docker image prune -f
+                '''
             }
         }
     }
 }
-
