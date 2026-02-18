@@ -3,21 +3,23 @@ pipeline {
 
     stages {
 
-        stage('Deploy Application') {
+        stage('Stop Old Containers') {
+            steps {
+                sh 'docker compose down || true'
+            }
+        }
+
+        stage('Build & Deploy Using Compose') {
             steps {
                 sh '''
-                echo "Stopping old containers..."
-                docker compose down || true
-
-                echo "Building new images..."
-                docker compose build --no-cache
-
-                echo "Starting new containers..."
-                docker compose up -d
-
-                echo "Cleaning unused images..."
-                docker image prune -f
+                docker compose up -d --build
                 '''
+            }
+        }
+
+        stage('Verify Running Containers') {
+            steps {
+                sh 'docker ps'
             }
         }
     }
