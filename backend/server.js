@@ -14,22 +14,18 @@ const db = mysql.createConnection({
   database: 'shopping'
 });
 
-db.connect(err => {
+db.connect((err) => {
   if (err) {
-    console.log("DB error:", err);
+    console.error("Database connection failed:", err);
   } else {
-    console.log("MySQL Connected");
+    console.log("Connected to MySQL");
   }
 });
 
-
-// TEST ROUTE
 app.get('/', (req, res) => {
-  res.send("Backend API Running");
+  res.send("Backend running");
 });
 
-
-// REGISTER API
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
 
@@ -38,16 +34,14 @@ app.post('/register', (req, res) => {
     [email, password],
     (err, result) => {
       if (err) {
-        res.status(500).json({ message: "Registration failed" });
-      } else {
-        res.json({ message: "User registered" });
+        console.error("Register error:", err);
+        return res.status(500).json({ message: "Registration failed" });
       }
+      res.json({ message: "User registered successfully" });
     }
   );
 });
 
-
-// LOGIN API
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
@@ -56,8 +50,11 @@ app.post('/login', (req, res) => {
     [email, password],
     (err, results) => {
       if (err) {
-        res.status(500).json({ message: "Server error" });
-      } else if (results.length > 0) {
+        console.error("Login error:", err);
+        return res.status(500).json({ success: false });
+      }
+
+      if (results.length > 0) {
         res.json({ success: true });
       } else {
         res.json({ success: false });
