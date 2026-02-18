@@ -1,0 +1,25 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Repo') {
+            steps {
+                git 'https://github.com/yourusername/online-shopping-app.git'
+            }
+        }
+
+        stage('Stop Old Containers') {
+            steps {
+                sh 'docker-compose down || true'
+            }
+        }
+
+        stage('Build & Deploy New Containers') {
+            steps {
+                sh 'docker-compose up -d --build'
+            }
+        }
+    }
+}
+

@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+
+  db:
+    image: mysql:8
+    container_name: shop-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shopdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - shop-network
+
+  backend:
+    build: ./backend
+    container_name: shop-backend
+    restart: always
+    ports:
+      - "5050:5000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: shopdb
+    networks:
+      - shop-network
+
+  frontend:
+    build: ./frontend
+    container_name: shop-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - shop-network
+
+# Named Volume (Persistent Storage)
+volumes:
+  mysql-data:
+
+# Custom Network
+networks:
+  shop-network:
+    driver: bridge
+
