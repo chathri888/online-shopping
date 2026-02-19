@@ -1,6 +1,6 @@
 services:
 
-  db:
+   db:
     image: mysql:8
     restart: always
     environment:
@@ -12,15 +12,23 @@ services:
       - db-data:/var/lib/mysql
     networks:
       - shop-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 
   backend:
+      backend:
     build: ./backend
     container_name: shop-backend
     restart: always
     ports:
       - "5050:5000"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
       DB_HOST: db
       DB_USER: root
