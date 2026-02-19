@@ -1,9 +1,84 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Home</title>
+    <title>Home - Online Shopping</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+        }
+
+        .navbar {
+            background: #4a90d9;
+            color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            font-size: 20px;
+        }
+
+        .navbar button {
+            padding: 8px 20px;
+            border: 2px solid #fff;
+            background: transparent;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .navbar button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .content h1 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .content p {
+            color: #666;
+            font-size: 16px;
+        }
+    </style>
 </head>
+
 <body>
-<h1>Welcome to Online Shopping</h1>
+
+    <div class="navbar">
+        <h2>Online Shopping</h2>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="content">
+        <h1>Welcome to Online Shopping</h1>
+        <p>You have successfully logged in!</p>
+    </div>
+
+    <script>
+        function logout() {
+            window.location.href = "index.html";
+        }
+    </script>
+
 </body>
+
 </html>

@@ -1,69 +1,216 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Login</title>
-</head>
-<body>
-
-<h1>Login</h1>
-
-<input type="email" id="email" placeholder="Email"><br><br>
-<input type="password" id="password" placeholder="Password"><br><br>
-
-<button onclick="login()">Login</button>
-<button onclick="register()">Register</button>
-
-<script>
-
-const API_URL = "http://134.33.64.78:5050";   // CONFIGURE YOUR API HERE
-
-function login() {
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    fetch(`${API_URL}/login`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-    })
-    .then(res => res.json())
-    .then(data => {
-
-        if (data.success) {
-            window.location.href = "home.html";   // AUTO REDIRECT
-        } else {
-            alert("Invalid Credentials");
+    <title>Login - Online Shopping</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-    })
-    .catch(err => {
-        console.error(err);
-        alert("API Error");
-    });
-}
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-function register() {
+        .container {
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
 
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
 
-    fetch(`${API_URL}/register`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-    })
-    .then(res => res.json())
-    .then(data => {
-        alert(data.message);
-    });
-}
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
 
-</script>
+        input:focus {
+            outline: none;
+            border-color: #4a90d9;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .btn-login {
+            background: #4a90d9;
+            color: #fff;
+        }
+
+        .btn-login:hover {
+            background: #357abd;
+        }
+
+        .btn-register {
+            background: #42b72a;
+            color: #fff;
+        }
+
+        .btn-register:hover {
+            background: #36a420;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .msg {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .msg.error {
+            display: block;
+            background: #fce4e4;
+            color: #cc0000;
+        }
+
+        .msg.success {
+            display: block;
+            background: #e4fce4;
+            color: #008800;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Online Shopping</h1>
+
+        <div id="msg" class="msg"></div>
+
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+
+        <button class="btn btn-login" id="loginBtn" onclick="login()">Login</button>
+        <button class="btn btn-register" id="registerBtn" onclick="register()">Register</button>
+    </div>
+
+    <script>
+
+        const API_URL = "http://134.33.64.78:5050";
+
+        function showMsg(text, type) {
+            const msg = document.getElementById("msg");
+            msg.textContent = text;
+            msg.className = "msg " + type;
+        }
+
+        function clearMsg() {
+            const msg = document.getElementById("msg");
+            msg.className = "msg";
+            msg.textContent = "";
+        }
+
+        function setLoading(loading) {
+            document.getElementById("loginBtn").disabled = loading;
+            document.getElementById("registerBtn").disabled = loading;
+        }
+
+        function login() {
+            clearMsg();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!email || !password) {
+                showMsg("Please enter both email and password", "error");
+                return;
+            }
+
+            setLoading(true);
+
+            fetch(API_URL + "/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    setLoading(false);
+                    if (data.success) {
+                        showMsg("Login successful! Redirecting...", "success");
+                        setTimeout(function () {
+                            window.location.href = "home.html";
+                        }, 500);
+                    } else {
+                        showMsg("Invalid email or password", "error");
+                    }
+                })
+                .catch(function (err) {
+                    setLoading(false);
+                    console.error("Login error:", err);
+                    showMsg("Cannot connect to server. Please try again.", "error");
+                });
+        }
+
+        function register() {
+            clearMsg();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!email || !password) {
+                showMsg("Please enter both email and password", "error");
+                return;
+            }
+
+            setLoading(true);
+
+            fetch(API_URL + "/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            })
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    setLoading(false);
+                    if (data.message === "User registered successfully") {
+                        showMsg("Registered! You can now login.", "success");
+                    } else {
+                        showMsg(data.message || "Registration failed", "error");
+                    }
+                })
+                .catch(function (err) {
+                    setLoading(false);
+                    console.error("Register error:", err);
+                    showMsg("Cannot connect to server. Please try again.", "error");
+                });
+        }
+
+    </script>
 
 </body>
+
 </html>
