@@ -1,10 +1,7 @@
-
-
 services:
 
   db:
     image: mysql:8
-  
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -33,7 +30,6 @@ services:
       - shop-network
 
   frontend:
-   image: nginx
     build: ./frontend
     container_name: shop-frontend
     restart: always
@@ -43,15 +39,12 @@ services:
       - backend
     networks:
       - shop-network
-      volumes:
+    volumes:
       - ./frontend:/usr/share/nginx/html
 
-# Named Volume (Persistent Storage)
 volumes:
   db-data:
 
-# Custom Network
 networks:
   shop-network:
     driver: bridge
-
